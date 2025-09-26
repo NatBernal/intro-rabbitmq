@@ -1,0 +1,31 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  sender:
+    build:
+      context: ./rabbitmq-tutorial
+    env_file: .env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    command: sh -c "sleep 10 && node send.js"
+
+  receiver:
+    build:
+      context: ./rabbitmq-tutorial
+    env_file: .env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    command: sh -c "sleep 15 && node receive.js"
+
