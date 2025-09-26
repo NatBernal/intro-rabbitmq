@@ -5,27 +5,35 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    networks:
+      - rabbit-network
     healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      test: ["CMD", "rabbitmq-diagnostics", "ping"] # Comando para verificar si RabbitMQ está funcionando correctamente
+      interval: 10s # Intervalo de tiempo entre cada chequeo de salud (10 segundos)
+      timeout: 5s # Tiempo máximo para que el chequeo de salud responda antes de considerarlo fallido
+      retries: 5 # Número de intentos antes de marcar el servicio como no saludable
 
   sender:
     build:
       context: ./rabbitmq-tutorial
     env_file: .env
+    networks:
+      - rabbit-network
     depends_on:
       rabbitmq:
-        condition: service_healthy
+        condition: service_healthy # Este servicio depende de que RabbitMQ esté en estado "saludable"
     command: sh -c "sleep 10 && node send.js"
 
   receiver:
     build:
       context: ./rabbitmq-tutorial
     env_file: .env
+    networks:
+      - rabbit-network
     depends_on:
       rabbitmq:
-        condition: service_healthy
+        condition: service_healthy # Este servicio depende de que RabbitMQ esté en estado "saludable"
     command: sh -c "sleep 15 && node receive.js"
-
+networks:
+  rabbit-network:
+    driver: bridge
