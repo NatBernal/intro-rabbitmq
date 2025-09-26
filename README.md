@@ -10,6 +10,10 @@ En este proyecto, se configuraron tres servicios principales utilizando Docker C
 2. **Sender**: Un servicio que envía mensajes al servidor RabbitMQ.
 3. **Receiver**: Un servicio que recibe y procesa los mensajes desde RabbitMQ.
 
+## Tutorial usado
+
+Este proyecto se basó en un tutorial de JavaScript que utiliza Node.js para trabajar con RabbitMQ.
+
 # Flujos del tutorial
 
 ## Sending (Envío de mensajes)
